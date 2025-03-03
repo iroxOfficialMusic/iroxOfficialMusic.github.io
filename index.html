@@ -15,25 +15,110 @@
             top: 0;
             left: 0;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
-            padding-right: 20px;
+            padding: 0 20px;
             box-sizing: border-box;
         }
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
+        .logo {
+            height: 40px;
+            animation: spin 5s linear infinite;
         }
-        .top-bar a:hover {
-            text-decoration: underline;
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .right-content {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .soundcloud-logo {
+            height: 54px;
+        }
+        
+        /* Ping Pong Game */
+        .ping-pong-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 200px;
+            height: 100px;
+            background-color: black;
+            border: 2px solid white;
+        }
+        .paddle {
+            position: absolute;
+            width: 5px;
+            height: 30px;
+            background-color: white;
+        }
+        .ball {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <a href="https://soundcloud.com/iroxpl" target="_blank">My SoundCloud</a>
+        <img src="https://files.catbox.moe/av9u9m.png" class="logo" alt="Logo">
+        <div class="right-content">
+            <a href="https://soundcloud.com/iroxpl" target="_blank">
+                <img src="https://files.catbox.moe/j28mu1.png" class="soundcloud-logo" alt="SoundCloud">
+            </a>
+            <a href="https://github.com/iroxOfficialMusic/iroxOfficialMusic.github.io/raw/refs/heads/main/casino%20FAKE%20(PASS:%20123).zip" download>
+                <img src="https://files.catbox.moe/m88mqp.png" alt="Download" width="32" height="32">
+            </a>
+        </div>
     </div>
+
+    <div class="ping-pong-container">
+        <div class="paddle" id="paddleLeft" style="left: 0; top: 35px;"></div>
+        <div class="paddle" id="paddleRight" style="right: 0; top: 35px;"></div>
+        <div class="ball" id="ball" style="left: 96px; top: 46px;"></div>
+    </div>
+
+    <script>
+        const ball = document.getElementById("ball");
+        const paddleLeft = document.getElementById("paddleLeft");
+        const paddleRight = document.getElementById("paddleRight");
+        const container = document.querySelector(".ping-pong-container");
+        
+        let ballX = 96, ballY = 46, ballSpeedX = 2, ballSpeedY = 1.5;
+        let paddleLeftY = 35, paddleRightY = 35;
+        const paddleSpeed = 2;
+        
+        function gameLoop() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+            
+            if (ballY <= 0 || ballY >= 92) ballSpeedY *= -1;
+            
+            if (ballX <= 5 && ballY >= paddleLeftY && ballY <= paddleLeftY + 30) ballSpeedX *= -1;
+            if (ballX >= 187 && ballY >= paddleRightY && ballY <= paddleRightY + 30) ballSpeedX *= -1;
+            
+            if (ballX <= 0 || ballX >= 192) {
+                ballX = 96;
+                ballY = 46;
+                ballSpeedX = Math.random() > 0.5 ? 2 : -2;
+                ballSpeedY = Math.random() > 0.5 ? 1.5 : -1.5;
+            }
+            
+            paddleLeftY += (ballY - paddleLeftY - 15) * 0.1;
+            paddleRightY += (ballY - paddleRightY - 15) * 0.1;
+            
+            ball.style.left = `${ballX}px`;
+            ball.style.top = `${ballY}px`;
+            paddleLeft.style.top = `${paddleLeftY}px`;
+            paddleRight.style.top = `${paddleRightY}px`;
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        gameLoop();
+    </script>
 </body>
 </html>
