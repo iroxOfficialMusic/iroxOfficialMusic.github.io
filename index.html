@@ -163,27 +163,27 @@
         const bgMusic = document.getElementById("backgroundMusic");
         const playButton = document.getElementById("playButton");
 
-        // Function to check and update button visibility
         function updateButtonVisibility() {
             if (localStorage.getItem("musicPlaying") === "true") {
-                bgMusic.play();  // Ensure music plays if stored
-                playButton.style.display = "none"; // Hide button if music is playing
+                bgMusic.play(); 
+                playButton.style.display = "none";
             } else {
-                playButton.style.display = "block"; // Show button if music isn't playing
+                playButton.style.display = "block";
             }
         }
 
-        // Run function on page load to set button state
         updateButtonVisibility();
 
         playButton.addEventListener("click", function () {
             bgMusic.play().then(() => {
-                playButton.style.display = "none"; // Hide button after playing
-                localStorage.setItem("musicPlaying", "true"); // Store music state
+                localStorage.setItem("musicPlaying", "true");
+                updateButtonVisibility();
             }).catch(error => {
                 console.error("Playback failed:", error);
             });
         });
+
+        window.addEventListener("focus", updateButtonVisibility);
     });
     </script>    
     
