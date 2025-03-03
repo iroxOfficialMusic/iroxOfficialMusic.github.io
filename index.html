@@ -165,24 +165,27 @@
 
             function updateButtonVisibility() {
                 if (localStorage.getItem("musicPlaying") === "true") {
-                    bgMusic.play();
-                    playButton.style.display = "none";
+                    bgMusic.play(); // Ensure music continues
+                    playButton.style.display = "none"; // Hide button
                 } else {
-                    playButton.style.display = "block";
+                    playButton.style.display = "block"; // Show button if music isn't playing
                 }
             }
 
+            // Run on page load
             updateButtonVisibility();
 
             playButton.addEventListener("click", function () {
                 bgMusic.play().then(() => {
                     localStorage.setItem("musicPlaying", "true");
-                    updateButtonVisibility();
+                    updateButtonVisibility(); // Hide button after clicking
                 }).catch(error => {
                     console.error("Playback failed:", error);
                 });
             });
 
+            // Update button visibility when returning to the page
+            document.addEventListener("visibilitychange", updateButtonVisibility);
             window.addEventListener("focus", updateButtonVisibility);
         });
     </script> 
