@@ -159,23 +159,24 @@
     <audio id="jumpscareSound" src="https://www.myinstants.com/media/sounds/fnaf-3-scream-sound.mp3"></audio>
 
     <script>
-        document.getElementById("playButton").addEventListener("click", function() {
-            const bgMusic = document.getElementById("backgroundMusic");
+    document.addEventListener("DOMContentLoaded", function () {
+        const bgMusic = document.getElementById("backgroundMusic");
+        const playButton = document.getElementById("playButton");
+
+        if (localStorage.getItem("musicPlaying") === "true") {
+            bgMusic.play();
+            playButton.style.display = "none"; // Ensure it stays hidden
+        }
+
+        playButton.addEventListener("click", function () {
             bgMusic.play().then(() => {
                 this.style.display = "none";
-                localStorage.setItem("musicPlaying", "true");
-                eraseEffect();
+                localStorage.setItem("musicPlaying", "true"); // Store music state
             }).catch(error => {
                 console.error("Playback failed:", error);
             });
         });
-    
-        document.addEventListener("DOMContentLoaded", function() {
-            const bgMusic = document.getElementById("backgroundMusic");
-            if (localStorage.getItem("musicPlaying") === "true") {
-                bgMusic.play();
-            }
-        });
+    });
     </script>    
     
     <script>
@@ -217,16 +218,16 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const text = "welcome to my epic site!1!";
-            const typewriter = document.getElementById("typewriter");
-            let index = 0;
-            
-            function getRandomColor() {
-                return `hsl(${Math.random() * 360}, 100%, 75%)`;
-            }
-            
-            function typeEffect() {
+    document.addEventListener("DOMContentLoaded", function () {
+        const text = "welcome to my epic site!1!";
+        const typewriter = document.getElementById("typewriter");
+        let index = 0;
+
+        function getRandomColor() {
+            return `hsl(${Math.random() * 360}, 100%, 75%)`;
+        }
+
+    function typeEffect() {
                 if (index < text.length) {
                     const span = document.createElement("span");
                     span.textContent = text[index] === " " ? "\u00A0" : text[index];
@@ -240,7 +241,7 @@
                     setTimeout(eraseEffect, 2000);
                 }
             }
-            
+
             function eraseEffect() {
                 if (typewriter.children.length > 0) {
                     typewriter.removeChild(typewriter.lastChild);
@@ -249,11 +250,20 @@
                     document.getElementById("topBar").style.opacity = "1";
                     document.getElementById("gameContainer").style.opacity = "1";
                     startGame();
+                    localStorage.setItem("typewriterDone", "true"); // Mark as done
                 }
             }
-            
-            typeEffect();
+
+            // Only show typewriter effect the first time
+            if (!localStorage.getItem("typewriterDone")) {
+                typeEffect();
+            } else {
+                document.getElementById("topBar").style.opacity = "1";
+                document.getElementById("gameContainer").style.opacity = "1";
+                startGame();
+            }
         });
+
         
         function startGame() {
             const ball = document.getElementById("ball");
