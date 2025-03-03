@@ -134,14 +134,14 @@
     <div class="typewriter" id="typewriter"></div>
     <div class="top-bar" id="topBar">
         <img src="https://files.catbox.moe/av9u9m.png" class="logo" id="cat" alt="Logo">
-        <audio id="backgroundMusic" src="https://files.catbox.moe/hmzdhj.mp3" loop></audio>
+        <audio id="backgroundMusic" src="https://static.wikia.nocookie.net/undertale/images/6/6c/Hotel_music.ogg/revision/latest?cb=20160401061238" loop></audio>
         
         <button id="playButton">▶ Play Music</button>
         <div class="right-content">
             <a href="https://soundcloud.com/iroxpl" target="_blank">
                 <img src="https://files.catbox.moe/j28mu1.png" class="soundcloud-logo" alt="SoundCloud">
             </a>
-            <a href="https://github.com/iroxOfficialMusic/iroxOfficialMusic.github.io/raw/refs/heads/main/casino%20FAKE%20(PASS:%20123).zip" download>
+            <a href="https://iroxofficialmusic.github.io/files/" download>
                 <img src="https://files.catbox.moe/m88mqp.png" alt="Download" width="32" height="32">
             </a>
         </div>
@@ -163,6 +163,7 @@
         const bgMusic = document.getElementById("backgroundMusic");
         bgMusic.play().then(() => {
             document.getElementById("playPrompt").style.display = 'none';
+            // Proceed with eraseEffect or other functions
             eraseEffect();
         }).catch(error => {
             console.error("Playback failed:", error);
@@ -288,8 +289,8 @@
     document.getElementById("playButton").addEventListener("click", function() {
         const bgMusic = document.getElementById("backgroundMusic");
         bgMusic.play().then(() => {
-            this.style.display = "none";
-            eraseEffect();
+            this.style.display = "none"; // Hide button after clicking
+            eraseEffect(); // Start eraseEffect() after music plays
         }).catch(error => {
             console.error("Playback failed:", error);
         });
