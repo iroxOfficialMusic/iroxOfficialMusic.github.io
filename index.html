@@ -25,6 +25,27 @@
             opacity: 0;
             transition: opacity 1s ease-in;
         }
+        #playButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #262626;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        #playButton:hover {
+            background-color: #3a3a3a;
+        }
+
+        #playButton:active {
+            transform: scale(0.95);
+        }
         .logo {
             height: 40px;
             animation: spin 5s linear infinite;
@@ -86,12 +107,36 @@
             from { transform: translateY(0px); }
             to { transform: translateY(-3px); }
         }
+        .jumpscare {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s;
+        }
+        .jumpscare img {
+            max-width: 100%;
+            max-height: 100%;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
     <div class="typewriter" id="typewriter"></div>
     <div class="top-bar" id="topBar">
-        <img src="https://files.catbox.moe/av9u9m.png" class="logo" alt="Logo">
+        <img src="https://files.catbox.moe/av9u9m.png" class="logo" id="cat" alt="Logo">
+        <audio id="backgroundMusic" src="https://static.wikia.nocookie.net/undertale/images/6/6c/Hotel_music.ogg/revision/latest?cb=20160401061238" loop></audio>
+        
+        <button id="playButton">▶ Play Music</button>
         <div class="right-content">
             <a href="https://soundcloud.com/iroxpl" target="_blank">
                 <img src="https://files.catbox.moe/j28mu1.png" class="soundcloud-logo" alt="SoundCloud">
@@ -107,6 +152,61 @@
         <div class="paddle" id="paddleRight" style="right: 0; top: 35px;"></div>
         <div class="ball" id="ball" style="left: 96px; top: 46px;"></div>
     </div>
+
+    <div class="jumpscare" id="jumpscare">
+        <img src="https://files.catbox.moe/av9u9m.png" alt="Scary Cat">
+    </div>
+    <audio id="jumpscareSound" src="https://www.myinstants.com/media/sounds/fnaf-3-scream-sound.mp3"></audio>
+
+    <script>
+    function startBackgroundMusic() {
+        const bgMusic = document.getElementById("backgroundMusic");
+        bgMusic.play().then(() => {
+            document.getElementById("playPrompt").style.display = 'none';
+            eraseEffect();
+        }).catch(error => {
+            console.error("Playback failed:", error);
+        });
+    }
+    </script>
+    
+    <script>
+        let clickCount = 0;
+        const cat = document.getElementById("cat");
+        const jumpscare = document.getElementById("jumpscare");
+        const sound = document.getElementById("jumpscareSound");
+        
+        cat.addEventListener("click", function() {
+            clickCount++;
+            if (clickCount === 1) {
+                cat.style.animation = "none";
+                cat.style.transform = "rotate(0deg)";
+            } else if (clickCount === 2) {
+                alert("stop. don't.");
+            } else if (clickCount === 3) {
+                const bgMusic = document.getElementById("backgroundMusic");
+
+                sound.addEventListener("play", () => {
+                    bgMusic.volume = 0;
+                });
+
+                sound.addEventListener("ended", () => {
+                    bgMusic.volume = 1;
+                });
+                jumpscare.style.opacity = "1";
+                sound.play();
+                setTimeout(() => {
+                    jumpscare.style.opacity = "0";
+                    cat.style.opacity = "0";
+                    setTimeout(() => {
+                        cat.style.opacity = "1";
+                        cat.style.animation = "spin 5s linear infinite";
+                        clickCount = 0;
+                    }, 600);
+                }, 600);
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -182,6 +282,18 @@
             
             gameLoop();
         }
+    </script>
+
+    <script>
+    document.getElementById("playButton").addEventListener("click", function() {
+        const bgMusic = document.getElementById("backgroundMusic");
+        bgMusic.play().then(() => {
+            this.style.display = "none";
+            eraseEffect();
+        }).catch(error => {
+            console.error("Playback failed:", error);
+        });
+    });
     </script>
 </body>
 </html>
