@@ -163,14 +163,22 @@
         const bgMusic = document.getElementById("backgroundMusic");
         const playButton = document.getElementById("playButton");
 
-        if (localStorage.getItem("musicPlaying") === "true") {
-            bgMusic.play();
-            playButton.style.display = "none"; // Ensure it stays hidden
+        // Function to check and update button visibility
+        function updateButtonVisibility() {
+            if (localStorage.getItem("musicPlaying") === "true") {
+                bgMusic.play();  // Ensure music plays if stored
+                playButton.style.display = "none"; // Hide button if music is playing
+            } else {
+                playButton.style.display = "block"; // Show button if music isn't playing
+            }
         }
+
+        // Run function on page load to set button state
+        updateButtonVisibility();
 
         playButton.addEventListener("click", function () {
             bgMusic.play().then(() => {
-                this.style.display = "none";
+                playButton.style.display = "none"; // Hide button after playing
                 localStorage.setItem("musicPlaying", "true"); // Store music state
             }).catch(error => {
                 console.error("Playback failed:", error);
