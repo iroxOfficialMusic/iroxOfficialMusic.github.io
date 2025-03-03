@@ -296,8 +296,8 @@
     document.getElementById("playButton").addEventListener("click", function() {
         const bgMusic = document.getElementById("backgroundMusic");
         bgMusic.play().then(() => {
-            this.style.display = "none"; // Hide button after clicking
-            eraseEffect(); // Start eraseEffect() after music plays
+            this.style.display = "none";
+            eraseEffect();
         }).catch(error => {
             console.error("Playback failed:", error);
         });
