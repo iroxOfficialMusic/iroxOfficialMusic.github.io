@@ -159,33 +159,33 @@
     <audio id="jumpscareSound" src="https://www.myinstants.com/media/sounds/fnaf-3-scream-sound.mp3"></audio>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const bgMusic = document.getElementById("backgroundMusic");
-        const playButton = document.getElementById("playButton");
+        document.addEventListener("DOMContentLoaded", function () {
+            const bgMusic = document.getElementById("backgroundMusic");
+            const playButton = document.getElementById("playButton");
 
-        function updateButtonVisibility() {
-            if (localStorage.getItem("musicPlaying") === "true") {
-                bgMusic.play(); 
-                playButton.style.display = "none";
-            } else {
-                playButton.style.display = "block";
+            function updateButtonVisibility() {
+                if (localStorage.getItem("musicPlaying") === "true") {
+                    bgMusic.play();
+                    playButton.style.display = "none";
+                } else {
+                    playButton.style.display = "block";
+                }
             }
-        }
 
-        updateButtonVisibility();
+            updateButtonVisibility();
 
-        playButton.addEventListener("click", function () {
-            bgMusic.play().then(() => {
-                localStorage.setItem("musicPlaying", "true");
-                updateButtonVisibility();
-            }).catch(error => {
-                console.error("Playback failed:", error);
+            playButton.addEventListener("click", function () {
+                bgMusic.play().then(() => {
+                    localStorage.setItem("musicPlaying", "true");
+                    updateButtonVisibility();
+                }).catch(error => {
+                    console.error("Playback failed:", error);
+                });
             });
-        });
 
-        window.addEventListener("focus", updateButtonVisibility);
-    });
-    </script>    
+            window.addEventListener("focus", updateButtonVisibility);
+        });
+    </script> 
     
     <script>
         let clickCount = 0;
