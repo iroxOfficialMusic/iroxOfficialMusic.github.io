@@ -6,6 +6,10 @@
         body {
             margin: 0;
             background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
         }
         .top-bar {
             width: 100%;
@@ -18,6 +22,8 @@
             align-items: center;
             padding: 0 20px;
             box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 1s ease-in;
         }
         .logo {
             height: 40px;
@@ -36,8 +42,6 @@
         .soundcloud-logo {
             height: 54px;
         }
-        
-        /* Ping Pong Game */
         .ping-pong-container {
             position: fixed;
             bottom: 10px;
@@ -46,24 +50,47 @@
             height: 100px;
             background-color: black;
             border: 2px solid white;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        .paddle, .ball {
+            position: absolute;
+            background-color: white;
         }
         .paddle {
-            position: absolute;
             width: 5px;
             height: 30px;
-            background-color: white;
         }
         .ball {
-            position: absolute;
             width: 8px;
             height: 8px;
-            background-color: white;
             border-radius: 50%;
+        }
+        .typewriter {
+            font-size: 24px;
+            margin-top: 80px;
+            white-space: pre;
+            overflow: hidden;
+            display: inline-block;
+            animation: lean 3s infinite ease-in-out alternate;
+        }
+        @keyframes lean {
+            0% { transform: rotate(-3deg); }
+            100% { transform: rotate(3deg); }
+        }
+        .char {
+            display: inline-block;
+            animation: bob 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes bob {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-3px); }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
+    <div class="typewriter" id="typewriter"></div>
+    <div class="top-bar" id="topBar">
         <img src="https://files.catbox.moe/av9u9m.png" class="logo" alt="Logo">
         <div class="right-content">
             <a href="https://soundcloud.com/iroxpl" target="_blank">
@@ -75,50 +102,86 @@
         </div>
     </div>
 
-    <div class="ping-pong-container">
+    <div class="ping-pong-container" id="gameContainer">
         <div class="paddle" id="paddleLeft" style="left: 0; top: 35px;"></div>
         <div class="paddle" id="paddleRight" style="right: 0; top: 35px;"></div>
         <div class="ball" id="ball" style="left: 96px; top: 46px;"></div>
     </div>
 
     <script>
-        const ball = document.getElementById("ball");
-        const paddleLeft = document.getElementById("paddleLeft");
-        const paddleRight = document.getElementById("paddleRight");
-        const container = document.querySelector(".ping-pong-container");
-        
-        let ballX = 96, ballY = 46, ballSpeedX = 2, ballSpeedY = 1.5;
-        let paddleLeftY = 35, paddleRightY = 35;
-        const paddleSpeed = 2;
-        
-        function gameLoop() {
-            ballX += ballSpeedX;
-            ballY += ballSpeedY;
+        document.addEventListener("DOMContentLoaded", function() {
+            const text = "welcome to my epic site!1!";
+            const typewriter = document.getElementById("typewriter");
+            let index = 0;
             
-            if (ballY <= 0 || ballY >= 92) ballSpeedY *= -1;
-            
-            if (ballX <= 5 && ballY >= paddleLeftY && ballY <= paddleLeftY + 30) ballSpeedX *= -1;
-            if (ballX >= 187 && ballY >= paddleRightY && ballY <= paddleRightY + 30) ballSpeedX *= -1;
-            
-            if (ballX <= 0 || ballX >= 192) {
-                ballX = 96;
-                ballY = 46;
-                ballSpeedX = Math.random() > 0.5 ? 2 : -2;
-                ballSpeedY = Math.random() > 0.5 ? 1.5 : -1.5;
+            function getRandomColor() {
+                return `hsl(${Math.random() * 360}, 100%, 75%)`;
             }
             
-            paddleLeftY += (ballY - paddleLeftY - 15) * 0.1;
-            paddleRightY += (ballY - paddleRightY - 15) * 0.1;
+            function typeEffect() {
+                if (index < text.length) {
+                    const span = document.createElement("span");
+                    span.textContent = text[index] === " " ? "\u00A0" : text[index];
+                    span.classList.add("char");
+                    span.style.color = getRandomColor();
+                    span.style.animationDelay = `${index * 0.1}s`;
+                    typewriter.appendChild(span);
+                    index++;
+                    setTimeout(typeEffect, 100);
+                } else {
+                    setTimeout(eraseEffect, 2000);
+                }
+            }
             
-            ball.style.left = `${ballX}px`;
-            ball.style.top = `${ballY}px`;
-            paddleLeft.style.top = `${paddleLeftY}px`;
-            paddleRight.style.top = `${paddleRightY}px`;
+            function eraseEffect() {
+                if (typewriter.children.length > 0) {
+                    typewriter.removeChild(typewriter.lastChild);
+                    setTimeout(eraseEffect, 50);
+                } else {
+                    document.getElementById("topBar").style.opacity = "1";
+                    document.getElementById("gameContainer").style.opacity = "1";
+                    startGame();
+                }
+            }
             
-            requestAnimationFrame(gameLoop);
-        }
+            typeEffect();
+        });
         
-        gameLoop();
+        function startGame() {
+            const ball = document.getElementById("ball");
+            const paddleLeft = document.getElementById("paddleLeft");
+            const paddleRight = document.getElementById("paddleRight");
+            
+            let ballX = 96, ballY = 46, ballSpeedX = 2, ballSpeedY = 1.5;
+            let paddleLeftY = 35, paddleRightY = 35;
+            
+            function gameLoop() {
+                ballX += ballSpeedX;
+                ballY += ballSpeedY;
+                
+                if (ballY <= 0 || ballY >= 92) ballSpeedY *= -1;
+                if (ballX <= 5 && ballY >= paddleLeftY && ballY <= paddleLeftY + 30) ballSpeedX *= -1;
+                if (ballX >= 187 && ballY >= paddleRightY && ballY <= paddleRightY + 30) ballSpeedX *= -1;
+                if (ballX <= 0 || ballX >= 192) {
+                    ballX = 96;
+                    ballY = 46;
+                    ballSpeedX = Math.random() > 0.5 ? 2 : -2;
+                    ballSpeedY = Math.random() > 0.5 ? 1.5 : -1.5;
+                }
+                
+                paddleLeftY += (ballY - paddleLeftY - 15) * 0.1;
+                paddleRightY += (ballY - paddleRightY - 15) * 0.1;
+                
+                ball.style.left = `${ballX}px`;
+                ball.style.top = `${ballY}px`;
+                paddleLeft.style.top = `${paddleLeftY}px`;
+                paddleRight.style.top = `${paddleRightY}px`;
+                
+                requestAnimationFrame(gameLoop);
+            }
+            
+            gameLoop();
+        }
     </script>
 </body>
 </html>
