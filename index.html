@@ -159,17 +159,24 @@
     <audio id="jumpscareSound" src="https://www.myinstants.com/media/sounds/fnaf-3-scream-sound.mp3"></audio>
 
     <script>
-    function startBackgroundMusic() {
-        const bgMusic = document.getElementById("backgroundMusic");
-        bgMusic.play().then(() => {
-            document.getElementById("playPrompt").style.display = 'none';
-            // Proceed with eraseEffect or other functions
-            eraseEffect();
-        }).catch(error => {
-            console.error("Playback failed:", error);
+        document.getElementById("playButton").addEventListener("click", function() {
+            const bgMusic = document.getElementById("backgroundMusic");
+            bgMusic.play().then(() => {
+                this.style.display = "none";
+                localStorage.setItem("musicPlaying", "true");
+                eraseEffect();
+            }).catch(error => {
+                console.error("Playback failed:", error);
+            });
         });
-    }
-    </script>
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            const bgMusic = document.getElementById("backgroundMusic");
+            if (localStorage.getItem("musicPlaying") === "true") {
+                bgMusic.play();
+            }
+        });
+    </script>    
     
     <script>
         let clickCount = 0;
